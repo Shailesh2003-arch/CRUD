@@ -50,6 +50,17 @@ app.put("/teas/:id", (req, res) => {
   res.status(200).send(tea);
 });
 
+// creating delete request...
+
+app.delete("/teas/:id", (req, res) => {
+  const index = teaData.find((t) => t.id === parseInt(req.params.id));
+  if (index == -1) {
+    return res.status(404).send("tea not found");
+  }
+  teaData.splice(index, 1);
+  return res.status(200).send("deleted");
+});
+
 const port = 3000;
 const host = "127.0.0.1";
 app.listen(port, host, () => {
