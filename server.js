@@ -1,4 +1,5 @@
 // importing required packages...
+import "dotenv/config";
 import express from "express";
 
 // creating an express server...
@@ -61,7 +62,7 @@ app.delete("/teas/:id", (req, res) => {
   return res.status(200).send("deleted");
 });
 
-const port = 3000;
+const port = process.env.PORT || 3000;
 const host = "127.0.0.1";
 app.listen(port, host, () => {
   console.log(`Server listening on port : ${port}...`);
