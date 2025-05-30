@@ -1,11 +1,31 @@
 // importing required packages...
 import "dotenv/config";
 import express from "express";
+import logger from "./utility/logger.js";
+import morgan from "morgan";
 
 // creating an express server...
 const app = express();
 // parsing incoming request bodies...
 app.use(express.json());
+
+const morganFormat = ":method :url :status :response-time ms";
+
+app.use(
+  morgan(morganFormat, {
+    stream: {
+      write: (message) => {
+        const logObject = {
+          method: message.split(" ")[0],
+          url: message.split(" ")[1],
+          status: message.split(" ")[2],
+          responseTime: message.split(" ")[3],
+        };
+        logger.info(JSON.stringify(logObject));
+      },
+    },
+  })
+);
 
 // An array to store data and perform CRUD...
 const teaData = [];
@@ -54,6 +74,9 @@ app.put("/teas/:id", (req, res) => {
 // creating delete request...
 
 app.delete("/teas/:id", (req, res) => {
+  logger.warn(
+    `A delete request is being made to delete the tea with id:${req.params.id}`
+  );
   const index = teaData.find((t) => t.id === parseInt(req.params.id));
   if (index == -1) {
     return res.status(404).send("tea not found");
